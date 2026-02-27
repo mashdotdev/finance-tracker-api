@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 if TYPE_CHECKING:
     from models.category_model import Category
     from models.expense_model import Expenses
+    from models.budget_model import Budget
 
 
 class User(SQLModel, table=True):
@@ -20,6 +21,7 @@ class User(SQLModel, table=True):
     expenses: list["Expenses"] = Relationship(
         back_populates="owner", cascade_delete=True
     )
+    budgets: list["Budget"] = Relationship(back_populates="owner", cascade_delete=True)
 
 
 class UserCreate(SQLModel):

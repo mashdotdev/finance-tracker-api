@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from models.user_model import User
     from models.expense_model import Expenses
+    from models.budget_model import Budget
 
 
 class Category(SQLModel, table=True):
@@ -17,6 +18,7 @@ class Category(SQLModel, table=True):
     expenses: list["Expenses"] = Relationship(back_populates="category")
     created_at: datetime = Field(default_factory=datetime.now)
     owner: Optional["User"] = Relationship(back_populates="categories")
+    budget: Optional["Budget"] = Relationship(back_populates="category")
 
 
 class CategoryCreate(SQLModel):

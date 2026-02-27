@@ -54,4 +54,4 @@ Every criterion must pass for the implementation to be completed
 - [✅] - User model
 - [✅] - Category model
 - [✅] - Expense model
-- [] - Budget model
+- [✅] - Budget model
