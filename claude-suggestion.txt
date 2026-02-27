@@ -1,0 +1,75 @@
+Project: Smart Expense Tracker API
+A personal finance API where users track expenses, set budgets, and get AI-powered spending insights. It's practical, relatable, and exercises every concept from the course — without repeating the task manager.
+
+Why this project
+Different domain than the course (finance vs tasks)
+Real-world complexity: aggregations, date filtering, budget vs actual comparisons
+Natural fit for streaming AI advice
+Multi-table relationships (users → expenses → categories)
+Core Features (mapped to lessons)
+Feature	Lessons Exercised
+JWT signup/login	L9, L10
+CRUD for expenses + categories	L3, L4, L5
+Budget limits per category	L3, L4
+SQLModel + Neon persistence	L8
+Env config, .env.example	L7
+get_current_user dependency	L6
+Timing + CORS middleware	L11
+Lifespan: DB pool + HTTP client	L12
+SSE streaming AI advisor	L13
+Agent with expense tools	L14
+Full pytest coverage	L2
+API Endpoints
+
+POST   /users/signup
+POST   /token
+
+POST   /categories          # Create category (Food, Rent, etc.)
+GET    /categories
+DELETE /categories/{id}
+
+POST   /expenses            # Create expense with amount, category, date, note
+GET    /expenses            # With filters: ?category=Food&month=2026-02
+GET    /expenses/{id}
+PUT    /expenses/{id}
+DELETE /expenses/{id}
+
+GET    /budgets             # Get all budget limits
+PUT    /budgets/{category_id}  # Set monthly limit for a category
+GET    /summary             # Spending vs budget per category this month
+
+POST   /advisor/chat        # Non-streaming AI chat
+POST   /advisor/stream      # SSE streaming AI financial advice
+The Interesting Parts
+GET /summary — this endpoint is non-trivial. It has to:
+
+Aggregate expenses by category for the current month
+Compare against budget limits
+Return over/under budget status
+This forces you to write real SQL queries with SQLModel's select() + func.sum(), not just basic CRUD.
+
+The AI advisor agent gets tools like:
+
+get_spending_summary() — total by category
+get_top_expenses(n) — biggest purchases this month
+get_budget_status() — which categories are over budget
+Then a user can ask: "Where am I overspending?" or "Can I afford a $200 dinner this weekend?" and the agent queries the real data.
+
+Suggested Build Order
+Models: User, Category, Expense, Budget
+Auth routes (signup + login)
+Category CRUD
+Expense CRUD with date filtering
+Budget endpoints + /summary aggregation
+Middleware + lifespan
+Write pytest tests for all endpoints
+Add AI advisor tools as wrapper functions
+/advisor/chat (non-streaming)
+/advisor/stream (SSE)
+Stretch Goals (when the above is solid)
+GET /expenses/export — returns CSV via StreamingResponse
+Recurring expenses (weekly/monthly auto-entries)
+Multi-currency support with a live exchange rate fetch at lifespan
+A second agent: a "savings goal" tracker that estimates how long to reach a target
+One Rule
+Don't look at the course's capstone while building. Write your spec.md first, list your success criteria as checkboxes, then implement against it. That's the real skill being tested.
