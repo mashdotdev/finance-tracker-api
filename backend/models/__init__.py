@@ -1,6 +1,6 @@
 from models.user_model import User, UserCreate
 from models.category_model import Category, CategoryCreate
-from models.expense_model import ExpenseCreate, Expenses
+from models.expense_model import ExpenseCreate, Expenses, ExpenseUpdate
 
 __all__ = [
     "User",
@@ -9,4 +9,5 @@ __all__ = [
     "CategoryCreate",
     "Expenses",
     "ExpenseCreate",
+    "ExpenseUpdate",
 ]

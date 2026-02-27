@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlmodel import select, func
 from app import AsyncSession, get_session, raise_400_exception
 from auth import get_current_user
-from models import Category, Expenses, User, ExpenseCreate
+from models import Category, Expenses, User, ExpenseCreate, ExpenseUpdate
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -98,6 +98,49 @@ async def get_expense_by_id(
         raise raise_400_exception(detail="This expense does not exists! Create first")
 
     return expense
+
+
+@router.put(path="/{id}", description="update specific expense by id")
+async def update_expense(
+    id: str,
+    expense_update: ExpenseUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    expense_exists = (
+        await session.exec(
+            select(Expenses).where(
+                Expenses.id == id, Expenses.user_id == current_user.id
+            )
+        )
+    ).first()
+    if not expense_exists:
+        raise raise_400_exception(detail="This expense does not exists")
+
+    to_update_expense = expense_update.model_dump(exclude_unset=True)
+
+    # if "category_id" in to_update_expense:
+    #     category = (
+    #         await session.exec(
+    #             select(Category).where(
+    #                 Category.id == to_update_expense["category_id"],
+    #                 Category.user_id == current_user.id,
+    #             )
+    #         )
+    #     ).first()
+    #     if not category:
+    #         raise raise_400_exception(
+    #             detail="Category not found. Please select a valid category or create one first."
+    #         )
+
+    for key, items in to_update_expense.items():
+        setattr(expense_exists, key, items)
+
+    session.add(expense_exists)
+    await session.commit()
+    await session.refresh(expense_exists)
+
+    return expense_exists
 
 
 @router.delete(path="/{id}")

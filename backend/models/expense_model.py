@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime
@@ -24,4 +25,10 @@ class Expenses(SQLModel, table=True):
 class ExpenseCreate(SQLModel):
     category_id: UUID
     amount: float
+    note: Optional[str] = None
+
+
+class ExpenseUpdate(BaseModel):
+    category_id: Optional[UUID] = None
+    amount: Optional[float] = None
     note: Optional[str] = None

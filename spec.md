@@ -29,7 +29,7 @@ Every criterion must pass for the implementation to be completed
 - [✅] POST /expenses - create expenses with amount, category, date, note
 - [✅] GET /expenses - get all available expenses
 - [✅] GET /expenses/{id} - get specific expense by id
-- [] PUT /expenses/{id} - update specific expense by id
+- [✅] PUT /expenses/{id} - update specific expense by id
 - [✅] DELETE /expenses/{id} - delete specific expense by id
 
 #### Budget Endpoints
@@ -51,7 +51,7 @@ Every criterion must pass for the implementation to be completed
 
 ### Models
 
-- [] - User model
-- [] - Category model
-- [] - Expense model
+- [✅] - User model
+- [✅] - Category model
+- [✅] - Expense model
 - [] - Budget model
