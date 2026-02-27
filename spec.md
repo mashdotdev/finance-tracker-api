@@ -30,7 +30,7 @@ Every criterion must pass for the implementation to be completed
 - [✅] GET /expenses - get all available expenses
 - [✅] GET /expenses/{id} - get specific expense by id
 - [] PUT /expenses/{id} - update specific expense by id
-- [] DELETE /expenses/{id} - delete specific expense by id
+- [✅] DELETE /expenses/{id} - delete specific expense by id
 
 #### Budget Endpoints
 

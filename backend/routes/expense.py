@@ -98,3 +98,25 @@ async def get_expense_by_id(
         raise raise_400_exception(detail="This expense does not exists! Create first")
 
     return expense
+
+
+@router.delete(path="/{id}")
+async def delete_expense(
+    id: str,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    expense_exists = (
+        await session.exec(
+            select(Expenses).where(
+                Expenses.id == id, Expenses.user_id == current_user.id
+            )
+        )
+    ).first()
+    if not expense_exists:
+        raise raise_400_exception(detail="This expense does not exists")
+
+    await session.delete(expense_exists)
+    await session.commit()
+
+    return {"message": "Expense deleted successfully"}
