@@ -1,9 +1,16 @@
 from fastapi import FastAPI
-
+from routes import category_router, authentication_router, expense_router
+from app import lifespan
 
 app = FastAPI(
-    title="Smart Finance Tracker API", description="AI powered finance tracker api"
+    title="Smart Finance Tracker API",
+    description="AI powered finance tracker api",
+    lifespan=lifespan,
 )
+
+app.include_router(category_router)
+app.include_router(authentication_router)
+app.include_router(expense_router)
 
 
 @app.get(path="/health")

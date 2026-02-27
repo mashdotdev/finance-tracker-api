@@ -10,24 +10,25 @@ Every criterion must pass for the implementation to be completed
 
 ### Authentication
 
-- [] POST /users/signup creates user with Argon2-hashed password
-- [] POST /token signin users by signing JSON WEB TOKEN for valid credentials
-- [] Invalid credentials should return 401 error with generic message
-- [] JWT should expire after certain time
+- [✅] POST /users/signup creates user with Argon2-hashed password
+- [✅] POST /token signin users by signing JSON WEB TOKEN for valid credentials
+- [✅] GET /users/me get the current logged in user data
+- [✅] Invalid credentials should return 401 error with generic message
+- [✅] JWT should expire after certain time
 
 ### Task CRUD
 
 #### Categories Endpoints
 
-- [] POST /categories - create category like Food, Rent, etc..
-- [] GET /categories - get all created categories
-- [] DELETE /categories/{id} - delete category by id
+- [✅] POST /categories - create category like Food, Rent, etc..
+- [✅] GET /categories - get all created categories
+- [✅] DELETE /categories/{id} - delete category by id
 
 #### Expenses Endpoints
 
-- [] POST /expenses - create expenses with amount, category, date, note
-- [] GET /expenses - get all available expenses
-- [] GET /expenses/{id} - get specific expense by id
+- [✅] POST /expenses - create expenses with amount, category, date, note
+- [✅] GET /expenses - get all available expenses
+- [✅] GET /expenses/{id} - get specific expense by id
 - [] PUT /expenses/{id} - update specific expense by id
 - [] DELETE /expenses/{id} - delete specific expense by id
 
