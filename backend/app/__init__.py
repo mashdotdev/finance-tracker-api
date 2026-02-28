@@ -9,4 +9,5 @@ __all__ = [
     "get_session",
     "raise_400_exception",
     "AsyncSession",
+    "credential_exception",
 ]

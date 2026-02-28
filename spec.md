@@ -34,9 +34,9 @@ Every criterion must pass for the implementation to be completed
 
 #### Budget Endpoints
 
-- [] GET /budget - get all the budgets limits
-- [] PUT /budget/{category_id} - set monthly limit for a category
-- [] GET /summary - get summary by spending vs budget for the current month
+- [✅] GET /budget - get all the budgets limits
+- [✅] PUT /budget/{category_id} - set monthly limit for a category
+- [✅] GET /summary - get summary by spending vs budget for the current month
 
 #### Agent Endpoints
 

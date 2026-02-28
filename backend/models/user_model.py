@@ -2,11 +2,17 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID, uuid4
+from enum import Enum
 
 if TYPE_CHECKING:
     from models.category_model import Category
     from models.expense_model import Expenses
     from models.budget_model import Budget
+
+
+class Role(str, Enum):
+    user = "user"
+    admin = "admin"
 
 
 class User(SQLModel, table=True):
