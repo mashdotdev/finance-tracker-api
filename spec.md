@@ -40,13 +40,13 @@ Every criterion must pass for the implementation to be completed
 
 #### Agent Endpoints
 
-- [] POST /advisor/chat - chat with ai agent
+- [✅] POST /advisor/chat - chat with ai agent
 
 ### Tools for AI Agent
 
-- [] get_spending_summary() - total spend summary by category
+- [✅] get_spending_summary() - total spend summary by category
 - [] get_top_expenses() - biggest purchase for the current month
-- [] get_budget_status() - which categories are over budget
+- [✅] get_budget_status() - which categories are over budget
 - [] use can ask question like "where I am spending? or can can I afford new samsung s26 ultra? and then the agent queries the real data and give the answer
 
 ### Models
