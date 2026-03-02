@@ -4,7 +4,7 @@ from auth.security import (
     decode_jwt_token,
     create_jwt_token,
 )
-from auth.dependency import get_current_user
+from auth.dependency import get_current_user, require_admin
 
 __all__ = [
     "verify_password",
@@ -12,4 +12,5 @@ __all__ = [
     "decode_jwt_token",
     "create_jwt_token",
     "get_current_user",
+    "require_admin",
 ]

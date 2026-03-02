@@ -1,5 +1,11 @@
 from fastapi import FastAPI
-from routes import category_router, authentication_router, expense_router, budget_router
+from routes import (
+    category_router,
+    authentication_router,
+    expense_router,
+    budget_router,
+    admin_router,
+)
 from ai_agent import agent_router
 from app import lifespan
 
@@ -14,6 +20,7 @@ app.include_router(authentication_router)
 app.include_router(expense_router)
 app.include_router(budget_router)
 app.include_router(agent_router)
+app.include_router(admin_router)
 
 
 @app.get(path="/health")

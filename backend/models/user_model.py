@@ -20,6 +20,7 @@ class User(SQLModel, table=True):
     name: Optional[str] = Field(default=None, min_length=4, max_length=10)
     email: str = Field(unique=True, index=True)
     hashed_password: str
+    role: Role = Field(default=Role.user)
     created_at: datetime = Field(default_factory=datetime.now)
     categories: list["Category"] = Relationship(
         back_populates="owner", cascade_delete=True

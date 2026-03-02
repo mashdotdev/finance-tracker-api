@@ -145,3 +145,9 @@ async def get_top_expenses(ctx: RunContextWrapper[AgentContext], limit: int = 5)
         lines.append(f"{i}. ${expense.amount:.2f} in {category_name}{note}")
 
     return "\n".join(lines)
+
+
+@function_tool
+async def can_afford_suggestion(ctx: RunContextWrapper[AgentContext]):
+    session = ctx.context.session
+    user = ctx.context.user

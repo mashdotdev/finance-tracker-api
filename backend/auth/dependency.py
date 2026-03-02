@@ -1,9 +1,9 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import select
 from app import AsyncSession, get_session, credential_exception
 from auth import decode_jwt_token
-from models import User
+from models import User, Role
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
 
@@ -24,3 +24,12 @@ async def get_current_user(
         raise credential_exception()
 
     return user
+
+
+async def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != Role.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have access to this route",
+        )
+    return current_user
