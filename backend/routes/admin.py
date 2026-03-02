@@ -14,9 +14,7 @@ async def admin_delete_user(
     _: User = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
-    user = (
-        await session.exec(select(User).where(User.id == user_id))
-    ).first()
+    user = (await session.exec(select(User).where(User.id == user_id))).first()
 
     if not user:
         raise raise_400_exception(detail=f"User with id {user_id} does not exist")

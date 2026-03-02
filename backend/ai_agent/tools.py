@@ -148,6 +148,96 @@ async def get_top_expenses(ctx: RunContextWrapper[AgentContext], limit: int = 5)
 
 
 @function_tool
-async def can_afford_suggestion(ctx: RunContextWrapper[AgentContext]):
+async def can_afford_suggestion(
+    ctx: RunContextWrapper[AgentContext], item_name: str, item_price: float
+):
+    """
+    Analyze whether the user can afford a specific purchase based on their real financial data.
+    Use this when the user asks things like:
+    - "Can I afford a Samsung S26 Ultra?"
+    - "Should I buy a $500 item?"
+    - "Where am I spending the most?"
+    - "Do I have money left this month?"
+
+    Args:
+        item_name: The name of the item the user wants to buy (e.g. "Samsung S26 Ultra")
+        item_price: The price of the item in dollars (e.g. 1200.0)
+    """
     session = ctx.context.session
     user = ctx.context.user
+    now = datetime.now()
+
+    # Get all budgets and calculate remaining for each category
+    budgets = (
+        await session.exec(select(Budget).where(Budget.user_id == user.id))
+    ).all()
+
+    total_budget = 0.0
+    total_spent_this_month = 0.0
+    category_breakdown = []
+
+    for budget in budgets:
+        category = await session.get(Category, budget.category_id)
+        category_name = category.name if category else "Unknown"
+
+        spent = (
+            await session.exec(
+                select(func.sum(Expenses.amount)).where(
+                    Expenses.category_id == budget.category_id,
+                    Expenses.user_id == user.id,
+                    func.extract("month", _col(Expenses.date)) == now.month,
+                    func.extract("year", _col(Expenses.date)) == now.year,
+                )
+            )
+        ).one() or 0.0
+
+        remaining = budget.monthly_limit - spent
+        total_budget += budget.monthly_limit
+        total_spent_this_month += spent
+        category_breakdown.append(
+            f"  - {category_name}: ${remaining:.2f} remaining of ${budget.monthly_limit:.2f}"
+        )
+
+    total_remaining = total_budget - total_spent_this_month
+
+    # Build the response
+    lines = [
+        f"Here's your financial snapshot for {now.strftime('%B %Y')}:",
+        f"  Total budget:  ${total_budget:.2f}",
+        f"  Spent so far:  ${total_spent_this_month:.2f}",
+        f"  Remaining:     ${total_remaining:.2f}",
+    ]
+
+    if category_breakdown:
+        lines.append("\nBy category:")
+        lines.extend(category_breakdown)
+
+    lines.append(f"\nItem: {item_name} — ${item_price:.2f}")
+
+    if total_remaining <= 0:
+        lines.append(
+            "\nVerdict: You've already used up your entire budget this month. "
+            "It's not a good time to make this purchase."
+        )
+    elif item_price > total_remaining:
+        shortage = item_price - total_remaining
+        lines.append(
+            f"\nVerdict: You can't comfortably afford {item_name} right now. "
+            f"You're ${shortage:.2f} short based on your remaining budget."
+        )
+    elif item_price > total_remaining * 0.5:
+        lines.append(
+            f"\nVerdict: You could technically afford {item_name}, but it would use "
+            f"{(item_price / total_remaining * 100):.0f}% of your remaining budget. "
+            "Consider whether it's worth it this month."
+        )
+    else:
+        lines.append(
+            f"\nVerdict: Yes, you can afford {item_name}! "
+            f"You'll still have ${total_remaining - item_price:.2f} left in your budget after this purchase."
+        )
+
+    return "\n".join(lines)
+
+
+# Can I afford a Samsung S26 Ultra for $1200?

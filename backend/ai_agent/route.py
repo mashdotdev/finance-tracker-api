@@ -7,6 +7,7 @@ from .tools import (
     get_spending_summary,
     get_budget_status,
     get_top_expenses,
+    can_afford_suggestion,
     AgentContext,
 )
 from models import User
@@ -68,6 +69,12 @@ You help users understand and manage their financial data including expenses, ca
 - Examples: "What are my top expenses?", "What did I spend the most on?", "Show my biggest purchases"
 - limit is optional, defaults to 5
 
+### 4. can_afford_suggestion(item_name, item_price)
+- Use this when the user asks if they can afford something or where they are spending
+- Examples: "Can I afford a Samsung S26 Ultra?", "Should I buy a $500 jacket?", "Where am I spending?", "Do I have money left?"
+- Always extract the item name and price from the user's message before calling this tool
+- If the user doesn't mention a price, ask them for the price before calling the tool
+
 ## How to Behave
 - If the user asks about spending in a category, always call the appropriate tool — do not guess
 - If a tool returns no data, inform the user clearly and suggest they add expenses or categories first
@@ -77,7 +84,7 @@ You help users understand and manage their financial data including expenses, ca
 - More tools will be added over time — only use tools that are listed above
 """,
         model=model,
-        tools=[get_spending_summary, get_budget_status, get_top_expenses],
+        tools=[get_spending_summary, get_budget_status, get_top_expenses, can_afford_suggestion],  # type: ignore
     )
 
     result = await Runner.run(
