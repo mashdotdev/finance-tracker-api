@@ -35,3 +35,23 @@ def decode_jwt_token(token: str) -> dict[str, Any] | None:
         )
     except JWTError:
         return None
+
+
+def decode_refresh_jwt_token(refresh_token: str) -> dict[str, str] | None:
+    return jwt.decode(
+        token=refresh_token,
+        key=settings.refresh_token_secret_key,
+        algorithms=[settings.algorithm],
+    )
+
+
+def create_refresh_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.now() + timedelta(days=settings.refresh_access_token_expire_limit)
+    to_encode.update({"exp": expire, "type": "refresh"})
+
+    return jwt.encode(
+        claims=to_encode,
+        key=settings.refresh_token_secret_key,
+        algorithm=settings.algorithm,
+    )

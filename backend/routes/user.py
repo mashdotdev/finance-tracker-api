@@ -3,9 +3,22 @@ from sqlmodel import select
 from app import get_session, AsyncSession
 from models import User, UserCreate
 from app import raise_400_exception, get_settings, Settings
-from auth import encrypt_password, verify_password, create_jwt_token, get_current_user
+from auth import (
+    encrypt_password,
+    verify_password,
+    create_jwt_token,
+    get_current_user,
+    create_refresh_token,
+    decode_refresh_jwt_token,
+)
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from datetime import timedelta
+from pydantic import BaseModel
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
 
 settings: Settings = get_settings()
 router = APIRouter(prefix="/users", tags=["authentication"])
@@ -55,7 +68,29 @@ async def sign_in(
         data={"sub": user.email}, expires=timedelta(minutes=settings.token_expire_time)
     )
 
-    return {"access_token": access_token, "type": "Bearer"}
+    refresh_token = create_refresh_token(data={"sub": user.email})
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "type": "Bearer",
+    }
+
+
+@router.post(path="/refresh", description="refresh access token")
+async def get_refresh_access_token(request: RefreshRequest):
+    payload = decode_refresh_jwt_token(refresh_token=request.refresh_token)
+    if not payload:
+        raise raise_400_exception(detail="Something went wrong")
+
+    if payload.get("type") != "refresh":
+        raise raise_400_exception(detail="Access token being used here")
+
+    email: str | None = payload.get("sub")
+
+    new_access_token = create_jwt_token(data={"sub": email})
+
+    return {"access_token": new_access_token, "type": "bearer"}
 
 
 @router.get(path="/me", description="current user data")

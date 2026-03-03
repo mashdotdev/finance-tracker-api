@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     secret_key: str = ""
     algorithm: str = "HS256"
     token_expire_time: int = 30
+    refresh_access_token_expire_limit: int = 0
+    refresh_token_secret_key: str = ""
 
     # llm api key
     gemini_api_key: str = ""
