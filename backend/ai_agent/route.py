@@ -32,7 +32,7 @@ class AgentRequest(BaseModel):
 
 @router.post(
     path="/chat",
-    description="Chat wit the finance AI Agent",
+    description="Chat with the finance AI Agent",
 )
 async def chat(
     request: AgentRequest,

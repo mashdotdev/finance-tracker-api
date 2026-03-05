@@ -38,11 +38,14 @@ def decode_jwt_token(token: str) -> dict[str, Any] | None:
 
 
 def decode_refresh_jwt_token(refresh_token: str) -> dict[str, str] | None:
-    return jwt.decode(
-        token=refresh_token,
-        key=settings.refresh_token_secret_key,
-        algorithms=[settings.algorithm],
-    )
+    try:
+        return jwt.decode(
+            token=refresh_token,
+            key=settings.refresh_token_secret_key,
+            algorithms=[settings.algorithm],
+        )
+    except JWTError:
+        return None
 
 
 def create_refresh_token(data: dict) -> str:

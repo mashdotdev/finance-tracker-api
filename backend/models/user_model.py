@@ -17,7 +17,7 @@ class Role(str, Enum):
 
 class User(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True, unique=True)
-    name: Optional[str] = Field(default=None, min_length=4, max_length=10)
+    name: Optional[str] = Field(default=None, min_length=2, max_length=50)
     email: str = Field(unique=True, index=True)
     hashed_password: str
     role: Role = Field(default=Role.user)

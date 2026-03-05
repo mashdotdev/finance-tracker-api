@@ -119,20 +119,6 @@ async def update_expense(
 
     to_update_expense = expense_update.model_dump(exclude_unset=True)
 
-    # if "category_id" in to_update_expense:
-    #     category = (
-    #         await session.exec(
-    #             select(Category).where(
-    #                 Category.id == to_update_expense["category_id"],
-    #                 Category.user_id == current_user.id,
-    #             )
-    #         )
-    #     ).first()
-    #     if not category:
-    #         raise raise_400_exception(
-    #             detail="Category not found. Please select a valid category or create one first."
-    #         )
-
     for key, items in to_update_expense.items():
         setattr(expense_exists, key, items)
 
